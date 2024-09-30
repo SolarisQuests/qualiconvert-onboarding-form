@@ -80,7 +80,7 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
           </div>
           <Label htmlFor="terms" className="ml-2 text-sm">
             By electronically executing this agreement, you agree to all of the above{' '}
-            <a href="https://onboarding.qualiconvert.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href="https://www.qualiconvert.com/terms_conditions.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               terms and conditions
             </a>
           </Label>
