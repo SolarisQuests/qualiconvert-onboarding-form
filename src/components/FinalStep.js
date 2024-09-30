@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "./ui/Button";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
+import { useNavigate } from 'react-router-dom';
 
 const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [agreed, setAgreed] = useState(false);
@@ -9,6 +10,7 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [mathProblem, setMathProblem] = useState({ num1: 0, num2: 0, answer: '' });
   const [userAnswer, setUserAnswer] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (agreed) {
@@ -24,38 +26,28 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!agreed) {
-      setError("Please agree to the terms and conditions to proceed.");
-      return;
-    }
-    if (userAnswer !== mathProblem.answer) {
-      setError("Incorrect answer. Please try again to confirm you're not a bot.");
-      generateMathProblem();
-      setUserAnswer('');
-      return;
-    }
-    updateFormData({ agreed });
-    
+    setIsLoading(true);
+
+    let emailSent = true;
     try {
-      const response = await fetch('https://qualiconvert-server.onrender.com/api/submit-form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      // Save data to the database
+      await saveDataToDatabase();
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to submit form: ${errorData.message}`);
-      }
+      // Attempt to send email, but don't wait for it
+      await sendEmail();
 
-      const responseData = await response.json();
-      console.log('Form submission response:', responseData);
-      nextStep();
+      // Navigate to the confirmation page
+      navigate('/confirmation', { state: { emailSent } });
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setError(`There was an error submitting the form: ${error.message}`);
+      console.error('Error:', error);
+      if (error.message.includes('email')) {
+        emailSent = false;
+      } else {
+        setError('An error occurred while saving your data. Please try again.');
+        return;
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
