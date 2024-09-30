@@ -4,7 +4,7 @@ import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
 import { useNavigate } from 'react-router-dom';
 
-const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
+const FinalStep = ({ formData, updateFormData, prevStep }) => {
   const [agreed, setAgreed] = useState(false);
   const [agreed2, setAgreed2] = useState(false);
   const [mathProblem, setMathProblem] = useState({ num1: 0, num2: 0, answer: '' });
@@ -26,28 +26,40 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    let emailSent = true;
+    if (!agreed || !agreed2) {
+      setError("Please agree to both the terms and conditions and privacy policy to proceed.");
+      return;
+    }
+    if (userAnswer !== mathProblem.answer) {
+      setError("Incorrect answer. Please try again to confirm you're not a bot.");
+      generateMathProblem();
+      setUserAnswer('');
+      return;
+    }
+    updateFormData({ agreed, agreed2 });
+    
     try {
-      // Save data to the database
-      await saveDataToDatabase();
+      const response = await fetch('https://qualiconvert-server.onrender.com/api/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Attempt to send email, but don't wait for it
-      await sendEmail();
-
-      // Navigate to the confirmation page
-      navigate('/confirmation', { state: { emailSent } });
-    } catch (error) {
-      console.error('Error:', error);
-      if (error.message.includes('email')) {
-        emailSent = false;
-      } else {
-        setError('An error occurred while saving your data. Please try again.');
-        return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to submit form: ${errorData.message}`);
       }
-    } finally {
-      setIsLoading(false);
+
+      const responseData = await response.json();
+      console.log('Form submission response:', responseData);
+      
+      // Navigate to the confirmation page
+      navigate('/confirmation');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setError(`There was an error submitting the form: ${error.message}`);
     }
   };
 
