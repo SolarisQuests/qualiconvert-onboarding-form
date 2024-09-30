@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "./ui/Button";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
-import { useNavigate } from 'react-router-dom';
 
-const FinalStep = ({ formData, updateFormData, prevStep }) => {
+const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [agreed, setAgreed] = useState(false);
   const [agreed2, setAgreed2] = useState(false);
   const [mathProblem, setMathProblem] = useState({ num1: 0, num2: 0, answer: '' });
   const [userAnswer, setUserAnswer] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (agreed) {
@@ -26,8 +24,8 @@ const FinalStep = ({ formData, updateFormData, prevStep }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!agreed || !agreed2) {
-      setError("Please agree to both the terms and conditions and privacy policy to proceed.");
+    if (!agreed) {
+      setError("Please agree to the terms and conditions to proceed.");
       return;
     }
     if (userAnswer !== mathProblem.answer) {
@@ -36,7 +34,7 @@ const FinalStep = ({ formData, updateFormData, prevStep }) => {
       setUserAnswer('');
       return;
     }
-    updateFormData({ agreed, agreed2 });
+    updateFormData({ agreed });
     
     try {
       const response = await fetch('https://qualiconvert-server.onrender.com/api/submit-form', {
@@ -54,9 +52,7 @@ const FinalStep = ({ formData, updateFormData, prevStep }) => {
 
       const responseData = await response.json();
       console.log('Form submission response:', responseData);
-      
-      // Navigate to the confirmation page
-      navigate('/confirmation');
+      nextStep();
     } catch (error) {
       console.error('Error submitting form:', error);
       setError(`There was an error submitting the form: ${error.message}`);
