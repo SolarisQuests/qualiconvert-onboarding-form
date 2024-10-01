@@ -43,6 +43,12 @@ const LocationFields = ({ location, updateLocation, removeLocation, errors }) =>
         ))}
       </select> */}
       <Input
+        value={location.state}
+        onChange={(e) => updateLocation('state', e.target.value)}
+        placeholder="State"
+        required
+      />
+      <Input
         value={location.zip}
         onChange={(e) => updateLocation('zip', e.target.value)}
         placeholder="Zip"
@@ -126,7 +132,7 @@ const Step3 = ({ formData, updateFormData, nextStep, prevStep }) => {
         person we communicate with most frequently.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* {locations.map((location, index) => (
+        {locations.map((location, index) => (
           <LocationFields
             key={index}
             location={location}
@@ -137,7 +143,7 @@ const Step3 = ({ formData, updateFormData, nextStep, prevStep }) => {
               zip: errors[`zip_${index}`]
             }}
           />
-        ))} */}
+        ))}
         <Button type="button" onClick={addLocation} className="w-full">+ Add Location</Button>
         <div className="flex justify-between pt-4">
           <Button type="button" onClick={prevStep} variant="outline">Prev</Button>
