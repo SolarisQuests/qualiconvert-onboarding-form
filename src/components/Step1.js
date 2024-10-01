@@ -20,9 +20,9 @@ const Step1 = ({ formData, updateFormData, nextStep, prevStep }) => {
     e.preventDefault();
     const newErrors = {};
 
-    if (!validatePhone(phone)) {
-      newErrors.phone = "Please enter a valid US phone number";
-    }
+    // if (!validatePhone(phone)) {
+    //   newErrors.phone = "Please enter a valid US phone number";
+    // }
 
     if (Object.keys(newErrors).length === 0) {
       updateFormData({ name, email, phone, position });
