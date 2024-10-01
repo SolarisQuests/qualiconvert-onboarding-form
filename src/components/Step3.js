@@ -31,7 +31,7 @@ const LocationFields = ({ location, updateLocation, removeLocation, errors }) =>
         placeholder="City"
         required
       />
-      <select
+      {/* <select
         value={location.state}
         onChange={(e) => updateLocation('state', e.target.value)}
         className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -41,7 +41,7 @@ const LocationFields = ({ location, updateLocation, removeLocation, errors }) =>
         {US_STATES.map(state => (
           <option key={state} value={state}>{state}</option>
         ))}
-      </select>
+      </select> */}
       <Input
         value={location.zip}
         onChange={(e) => updateLocation('zip', e.target.value)}
@@ -100,14 +100,14 @@ const Step3 = ({ formData, updateFormData, nextStep, prevStep }) => {
     e.preventDefault();
     const newErrors = {};
 
-    locations.forEach((location, index) => {
-      if (!validatePhone(location.phone)) {
-        newErrors[`phone_${index}`] = "Please enter a valid US phone number";
-      }
-      if (!validateZip(location.zip)) {
-        newErrors[`zip_${index}`] = "Please enter a valid US ZIP code";
-      }
-    });
+    // locations.forEach((location, index) => {
+    //   if (!validatePhone(location.phone)) {
+    //     newErrors[`phone_${index}`] = "Please enter a valid US phone number";
+    //   }
+    //   if (!validateZip(location.zip)) {
+    //     newErrors[`zip_${index}`] = "Please enter a valid US ZIP code";
+    //   }
+    // });
 
     if (Object.keys(newErrors).length === 0) {
       updateFormData({ locations });
@@ -126,7 +126,7 @@ const Step3 = ({ formData, updateFormData, nextStep, prevStep }) => {
         person we communicate with most frequently.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {locations.map((location, index) => (
+        {/* {locations.map((location, index) => (
           <LocationFields
             key={index}
             location={location}
@@ -137,7 +137,7 @@ const Step3 = ({ formData, updateFormData, nextStep, prevStep }) => {
               zip: errors[`zip_${index}`]
             }}
           />
-        ))}
+        ))} */}
         <Button type="button" onClick={addLocation} className="w-full">+ Add Location</Button>
         <div className="flex justify-between pt-4">
           <Button type="button" onClick={prevStep} variant="outline">Prev</Button>
