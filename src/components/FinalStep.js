@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "./ui/Button";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
+import { useNavigate } from 'react-router-dom';
 
-const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
+const FinalStep = ({ formData, updateFormData, prevStep }) => {
   const [agreed, setAgreed] = useState(false);
-  const [agreed2, setAgreed2] = useState(false);
   const [mathProblem, setMathProblem] = useState({ num1: 0, num2: 0, answer: '' });
   const [userAnswer, setUserAnswer] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (agreed) {
@@ -37,7 +38,7 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     updateFormData({ agreed });
     
     try {
-      const response = await fetch('http://localhost:3002/api/submit-form', {
+      const response = await fetch('https://qualiconvert-server.onrender.com/api/submit-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +53,8 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
 
       const responseData = await response.json();
       console.log('Form submission response:', responseData);
-      nextStep();
+      
+      navigate('/confirmation');
     } catch (error) {
       console.error('Error submitting form:', error);
       setError(`There was an error submitting the form: ${error.message}`);
@@ -80,30 +82,12 @@ const FinalStep = ({ formData, updateFormData, nextStep, prevStep }) => {
           </div>
           <Label htmlFor="terms" className="ml-2 text-sm">
             By electronically executing this agreement, you agree to all of the above{' '}
-            <a href="https://onboarding.qualiconvert.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href="https://www.qualiconvert.com/terms_conditions.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               terms and conditions
             </a>
           </Label>
         </div>
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input
-              id="privacy"
-              type="checkbox"
-              checked={agreed2}
-              onChange={(e) => setAgreed2(e.target.checked)}
-              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-              required
-            />
-          </div>
-          <Label htmlFor="privacy" className="ml-2 text-sm">
-            By electronically executing this agreement, you agree to all of the above{' '}
-            <a href="https://onboarding.qualiconvert.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-             Privacy Policy
-            </a>
-          </Label>
-        </div>
-        {agreed&&agreed2 && (
+        {agreed && (
           <div>
             <Label htmlFor="mathProblem">Please confirm you're not a bot by answering this question:</Label>
             <p className="mb-2">{mathProblem.num1} + {mathProblem.num2} = ?</p>
