@@ -69,7 +69,7 @@ const Step1 = ({ formData, updateFormData, nextStep, prevStep }) => {
             id="phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="(201) 555-0123"
+            placeholder="+44 00 0000 0000"
             required
           />
           {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
