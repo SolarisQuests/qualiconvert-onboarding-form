@@ -38,7 +38,7 @@ const FinalStep = ({ formData, updateFormData, prevStep }) => {
     updateFormData({ agreed });
     
     try {
-      const response = await fetch('https://qualiconvert-server.onrender.com/api/submit-form', {
+      const response = await fetch('https://qualiconvert-server.vercel.app/api/submit-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
